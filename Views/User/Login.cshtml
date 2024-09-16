@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+@model ChatRealTime.Models.LoginVM
+<h1 class="text-danger">@TempData["Message"]</h1>
+<section class="form signup">
+    <header>ChatApp Realtime</header>
+    <form asp-action="Login" asp-controller="User">
+        <div class="text-danger" asp-validation-summary="All"></div>
+        <div class="error-txt"></div>
+        <div class="field input">
+            <label asp-for="@Model.Email">Email</label>
+            <input type="text" asp-for="@Model.Email" placeholder="Email" required>
+        </div>
+        <div class="field input">
+            <label asp-for="@Model.PasswordHash">Mật khẩu</label>
+            <input type="password" asp-for="@Model.PasswordHash" placeholder="Mật khẩu" required>
+            <i class=" fas fa-eye active"></i>
+        </div>
+
+        <div class="field button">
+            <input type="submit" value="Đăng nhập">
+        </div>
+
+        <div class="link">
+            Chưa có tài khoản?
+            <a asp-action="Register" asp-controller="User" >Đăng ký ngay</a>
+        </div>
+
+    </form>
+</section>
+@* <script>
+    const passField = document.querySelector(".form input[type='password']");
+    const toggleIcon = document.querySelector('form .field i');
+    toggleIcon.classList.remove("active");
+
+    toggleIcon.onclick = function () {
+        if (passField.type == "password") {
+            passField.type = "Text";
+            toggleIcon.classList.add("active");
+        }
+        else {
+            passField.type = "Password";
+            toggleIcon.classList.remove("active");
+        }
+    }
+</script> *@

@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "User";
+}
+@model ChatRealTime.Data.User
+<section class="users">
+    <header>
+        <div class="content">
+            <img src="~/Hinh/Image/@Model.Img" />
+            <div class="details">
+                <span>@Model.Username</span>
+                @if(Model.Status==1)
+                {
+                    <p>Đang hoạt động</p>
+                }
+                else
+                {
+                    <p>Dừng hoạt động</p>
+
+                }
+
+            </div>
+        </div>
+        <a asp-action="LogOut" asp-controller="User" class="logout">Đăng xuất</a>
+    </header>
+    <div class="search">
+        <span class="text">Lựa chọn bạn bè để trò chuyện</span>
+        <input  class="show" type="text" name="search" id="friendSearch" placeholder="Nhập tên để tìm kiếm">
+        <button class="active"><i class="fas fa-search"></i></button>
+       
+    </div>
+    <ul id="friendDropdown" class="dropdown">
+    </ul>
+    @await Component.InvokeAsync("User_list")
+</section>
+<script src="~/js/user-events.js">
+</script>
+<script src="~/js/load-user-list.js">
+</script>
+
+

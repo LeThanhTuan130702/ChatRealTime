@@ -1,0 +1,117 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model ICollection<ChatRealTime.Models.ChatBoxVM>
+<div class="chat-box" id="messagesList">
+    @if(Model.Count>0)
+    {
+        @foreach (var msg in Model)
+        {
+
+            @if (msg.SenderId == msg.UserId)
+            {
+                <div class="chat outgoing">
+                    <div class="details">
+                        <p>@msg.Content</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="chat incoming">
+                    <div class="details">
+                        <p>@msg.Content</p>
+                    </div>
+                </div>
+            }
+        }
+    }
+   
+
+    
+       
+
+</div>
+<form action="#" class="typing-area">
+    <input type="text"  class="incoming_id" id="" hidden>
+    <input  id="content" class="input-field" placeholder="Nhập nội dung">
+    <button type="button" id="icon" onclick="sendMessage()">
+        <i class="fab fa-telegram-plane"></i>
+    </button>
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.9/signalr.min.js"></script>
+@* <script src="~/js/Send-Chat.js"></script> *@
+<script>
+    const Content = document.querySelector('.input-field');
+    const Icon = document.getElementById('icon');
+    Content.onkeyup = () => {
+        let searchTerm = Content.value;
+       if (searchTerm !== "") {
+            Icon.classList.add("active");
+       } else {
+            Icon.classList.remove("active");
+
+
+       }
+    }
+    
+    var receiverId = @ViewBag.fId;
+    
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub")
+        .build();
+
+    // Nhận tin nhắn từ Hub
+    connection.on("ReceiveMessage", function (senderId, message) {
+        const msg = `${message}`;
+
+        // Tạo phần tử để hiển thị tin nhắn
+        const div1 = document.createElement("div");
+
+        // So sánh senderId với currentUserId
+        if (senderId !== @ViewBag.userId) {
+            div1.classList.add("chat", "incoming"); // Nếu người gửi là người dùng hiện tại
+            const div2 = document.createElement("div");
+            div2.classList.add("details");
+
+            const p = document.createElement("p");
+            p.textContent = msg;
+
+            div2.appendChild(p);
+            div1.appendChild(div2);
+
+            document.getElementById("messagesList").appendChild(div1);
+        }
+
+        
+    });
+
+    // Kết nối đến Hub
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    // Gửi tin nhắn từ người gửi (SenderId) đến người nhận (ReceiverId)
+    function sendMessage() {
+        const message = Content.value;
+
+        connection.invoke("SendMessageToUser", receiverId, message).catch(function (err) {
+            return console.error(err.toString());
+        });
+        const msg = `${message}`;
+
+        // Tạo phần tử để hiển thị tin nhắn
+        const div1 = document.createElement("div");
+        div1.classList.add("chat", "outgoing");
+        const div2 = document.createElement("div");
+        div2.classList.add("details");
+        const p = document.createElement("p");
+        p.textContent = msg;
+        div2.appendChild(p);
+        div1.appendChild(div2);
+        document.getElementById("messagesList").appendChild(div1);
+        Content.value=""; // Xóa nội dung sau khi gửi tin nhắn
+    }
+</script>

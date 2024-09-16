@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "Chat";
+}
+@model ChatRealTime.Data.User
+<section class="chat-area">
+    <header>
+        <a asp-action="Index" asp-controller="Home" class="back-icon">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <img src="~/Hinh/Image/@Model.Img">
+        <div class="details">
+            <span>@Model.Username</span>
+            @if(Model.Status==0)
+            {
+                <div>Không hoạt động</div>
+
+            }
+            else
+            {
+                <div>Đang hoạt động</div>
+
+            }
+        </div>
+    </header>
+
+    @await Component.InvokeAsync("Chat_box",Model);
+</section>
+
